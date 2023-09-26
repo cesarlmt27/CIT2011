@@ -1,4 +1,2 @@
 venv
 tarea1/requirements.txt
-*.json
-metricas.py
