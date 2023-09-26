@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  search:
+    build:
+      context: ./search/
+      dockerfile: Dockerfile
+    container_name: memcached_search
+    tty: true
+    stdin_open: true
+    volumes:
+      - './search:/app'
+      - './data_gen/cars.json:/app/cars.json'
+    networks:
+      - cache_network
+    restart: always
+
+  memcached:
+    container_name: memcached
+    image: memcached
+    ports:
+      - "11211:11211"
+    networks:
+      - cache_network
+    restart: always
+
+networks:
+  cache_network:
