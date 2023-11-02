@@ -14,23 +14,18 @@ services:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      - KAFKA_CFG_BACKGROUND_THREADS
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
       # Listeners
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-
-  sqlite:
-    build:
-      context: ./database/
-      dockerfile: Dockerfile
-    container_name: sqlite
-    tty: true
     volumes:
-      - './database:/database'
+      - ./create-topic.sh:/create-topic.sh
+    # Usar archivo "create-topic.sh" para sobrescribir el comando por defecto del Dockerfile
+    command: ["./create-topic.sh"]
 
 
   inscripcion:
@@ -39,19 +34,47 @@ services:
       dockerfile: Dockerfile
     container_name: inscripcion
     tty: true
-    volumes_from:
-      - sqlite
+    restart: on-failure
     volumes:
       - './inscripcion:/app'
+      - './database:/database'
     depends_on:
       - kafka
 
 
-  client:
+  stock:
     build:
-      context: .
+      context: ./stock/
       dockerfile: Dockerfile
-    container_name: client
+    container_name: stock
+    tty: true
+    restart: on-failure
     volumes:
-      - './client.py:/app/client.py'
+      - './stock:/app'
+      - './database:/database'
+    depends_on:
+      - kafka
+
+
+  venta:
+    build:
+      context: ./venta/
+      dockerfile: Dockerfile
+    container_name: venta
+    tty: true
+    restart: on-failure
+    volumes:
+      - './venta:/app'
+      - './database:/database'
+    depends_on:
+      - kafka
+
+
+  cliente:
+    build:
+      context: ./cliente/
+      dockerfile: Dockerfile
+    container_name: cliente
+    volumes:
+      - './cliente:/app/'
     tty: true

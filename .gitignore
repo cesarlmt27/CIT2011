@@ -1,4 +1,4 @@
 venv
 tarea1/requirements.txt
 __pycache__
-database.db
+.vscode

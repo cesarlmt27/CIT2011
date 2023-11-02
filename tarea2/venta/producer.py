@@ -5,8 +5,8 @@ import metricas as m
 producer = KafkaProducer(bootstrap_servers=['kafka:9092'],
                          value_serializer=lambda m: json.dumps(m).encode('ascii'))
 
-def formulario(data, partition):
-    producer.send('inscripcion', value=data, partition=partition)
+def venta(data):
+    producer.send('venta', value=data)
     
     metricas = producer.metrics()   # Diccionario anidado con las métricas
     avg_record_size = metricas['producer-metrics']['record-size-avg']   # Tamaño promedio de un registro

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import producer as p
+import producer as p
 import time
 import metricas as m
 
@@ -14,18 +15,10 @@ def index():
         tiempo_inicio = time.time() # Registrar el tiempo de inicio
         m.tiempo_inicio_list.append(tiempo_inicio)
         
-        print(f"Nombre: {data['nombre']}")
         print(f"Usuario: {data['usuario']}")
-        print(f"Correo: {data['correo']}")
-        print(f"PAID: {data['paid']}")
+        print(f"Monto: {data['monto']}")
         
-        # Convertir 'paid' a un booleano
-        paid = True if data['paid'].lower() == 'true' else False
-        
-        if paid:
-            p.formulario(data, 1)
-        else:
-            p.formulario(data, 0)
+        p.venta(data)
 
     return jsonify(data)
 
@@ -39,6 +32,7 @@ def salir():
         
         print("Ejecución completada.")
     return ""
+
 
 if __name__ == '__main__':
     app.run(debug = True, host= "0.0.0.0")

@@ -5,8 +5,9 @@ FROM python:3.10.12
 WORKDIR /app
 
 # Copia el código fuente al contenedor
-COPY client.py /app
+COPY . /app
 
 # Instala las dependencias del proyecto
 RUN pip install --upgrade pip
 RUN pip install requests
+RUN pip install Faker
