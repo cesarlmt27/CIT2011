@@ -60,7 +60,7 @@ while True:
         response = requests.post('http://stock:5000/salir')
         response = requests.post('http://venta:5000/salir')
         print("Petición enviada.")
-        #exit()
+        exit()
         
     else:
         print("Valor erróneo.\n")
